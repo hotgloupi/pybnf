@@ -11,7 +11,7 @@ class Balise(Group):
     def __init__(self):
         super(Balise, self).__init__([
             '<', NamedToken('open', Identifier), '>',
-            NamedToken('content', Identifier(r'[^<]+')) | Group(Balise, min=0, max=-1),
+            NamedToken('content', NamedToken('data', Identifier(r'[^<]+')) | Group(Balise, min=0, max=-1)),
             '</', NamedToken('close', Identifier), '>',
             TokenFunctor(self, Balise.hasSameTag),
         ])
@@ -23,7 +23,7 @@ class Balise(Group):
         if token == self._open_tag:
             context.beginNode(token.getToken().id)
         elif token == self._node_content:
-            context.setNodeData(token.getToken().id)
+            context.setNodeData(self._node_content.getToken().getByName('data').getToken().id)
         elif token == self._close_tag:
             context.endNode(token.getToken().id)
         else:
