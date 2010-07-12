@@ -29,7 +29,10 @@ class Context(object):
         new._save_pos = self._file.tell()
         return new
 
+    # stack and rules are left untouched
     def restore(self, backup):
+        self.pushToken("#l." + str(self._cur_line) + ": '" +
+                       backup._buf[0 : len(backup._buf) - len(self._buf)] + "'")
         self._file = backup._file
         self._buf = backup._buf
         self._file.seek(backup._save_pos)
@@ -92,6 +95,7 @@ class Context(object):
             if self.feedFromFile() == False or len(self._buf) < size:
                 return False
         self._buf = self._buf[size:]
+        return True
 
     def __str__(self):
         return "<Context '" + self._buf + "'>"

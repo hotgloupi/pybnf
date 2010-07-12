@@ -8,3 +8,4 @@ from alternative import Alternative
 from context import Context
 from namedtoken import NamedToken
 from tokenfunctor import TokenFunctor
+from eof import EOF

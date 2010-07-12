@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 
-from bnf import Literal, Group, Identifier, NamedToken
+from bnf import Literal, Group, Identifier, NamedToken, EOF
 
 # Variable ::= r'[a-zA-Z_][a-zA-Z0-9_]*'
 class Variable(Identifier):
@@ -29,13 +29,14 @@ class Declaration(Group):
 EndStatement = Literal(';')
 
 # Statement ::= Declaration EndStatement
-Statement = Group([
-    Declaration,
-    EndStatement
-])
+class Statement(Group):
+    __group__ = [Declaration, EndStatement]
+
+    def onMatch(self, context):
+        print "match  statement"
 
 # TinyLanguage ::= [Statement]*
-TinyLanguage = Group([Statement], min=0, max=-1)
+TinyLanguage = Group([Group([Statement], min=0, max=-1), EOF])
 
 if __name__ == '__main__':
     from bnf import Context
