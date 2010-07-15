@@ -1,5 +1,5 @@
 
-int i_j9;
+int i_j9 = 12;
 
 char c___6;
 

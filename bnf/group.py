@@ -11,14 +11,14 @@ class Group(Token):
     """
         Represent a group: contain a list of token
     """
-    _min = 1
-    _max = 1
-    __recursive_group__ = False
     # class scope
+    __recursive_group__ = False
     __group__ = None
     # object scope
     _group = None
     _named_tokens = None
+    _min = 1
+    _max = 1
 
     def __init__(self, group=None, min=1, max=1):
         if group is None:

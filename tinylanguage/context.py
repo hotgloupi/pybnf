@@ -12,6 +12,16 @@ class Context(BaseContext):
 
     def __init__(self, filename):
         BaseContext.__init__(self, filename)
-        _scopes = {}
-        self.pushScope(new Package)
+        self._scopes = {}
+        self.pushScope(filename[:-3], None)
+
+
+    def pushScope(self, name, parent):
+        scope = Scope(name, parent)
+        self._scopes[name] = scope
+        self._cur_scope = scope
+
+    def getCurrentScope(self):
+        return self._cur_scope
+
 
