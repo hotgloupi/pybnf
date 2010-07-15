@@ -41,6 +41,19 @@ class Group(Token):
         new = self.__class__(group=self._group, min=self._min, max=self._max)
         return new
 
+    def getMinMatch(self, context=None):
+        if isinstance(self._min, int):
+            return self._min
+        else:
+            return self._min(context)
+
+    def getMaxMatch(self, context=None):
+        if isinstance(self._max, int):
+            return self._max
+        else:
+            return self._max(context)
+
+
     def prepareItem(self, item):
         if isinstance(item, NamedToken):
             return NamedToken(item.getName(), self.prepareItem(item.getToken()))
@@ -98,8 +111,9 @@ class Group(Token):
                         raise Exception("Wrong object found in the group")
                 if debug:
                     print '-' * indent, i, "search:", str(token)
-                if not token.match(context):
-                    if i >= self._min:
+                has_matched = token.match(context)
+                if has_matched == False:
+                    if i >= self.getMinMatch(context):
                         if debug:
                             print '-' * indent, i, "not found:", str(token)
                             print '-' * indent, i, "but validating", str(self)
@@ -117,7 +131,7 @@ class Group(Token):
                     self.onSubMatch(context, token)
                     context.popToken(start=token)
             i += 1
-            if i >= self._max and self._max != -1:
+            if i >= self.getMaxMatch(context) and self.getMaxMatch(context) != -1:
                 break
         if debug:
             print '-' * indent, i, "found:", str(self)
@@ -137,18 +151,20 @@ class Group(Token):
             strings.append(str(token))
         strbase = '[' + ' '.join(strings) + ']'
 
-        if self._min == 1 and self._max == 1:
+        min = self.getMinMatch(None)
+        max = self.getMaxMatch(None)
+        if min == 1 and max == 1:
             return strbase
-        elif self._min == 0 and self._max == 1:
+        elif min == 0 and max == 1:
             return strbase +'?'
 
-        if self._max == -1:
-            if self._min == 0:
+        if max == -1:
+            if min == 0:
                 return strbase + '*'
-            elif self._min == 1:
+            elif min == 1:
                 return strbase + '+'
-            return strbase + '(' + str(self._min) + '..*)'
-        return strbase + '(' + str(self._min) + '..' + str(self._max) + ')'
+            return strbase + '(' + str(min) + '..*)'
+        return strbase + '(' + str(min) + '..' + str(max) + ')'
 
 
 

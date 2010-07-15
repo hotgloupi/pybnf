@@ -54,7 +54,8 @@ class Token(object):
                 self.onMatch(context)
                 return True
             else:
-                print "### Wrong token found, expected ", context.getTokenStack()[-1]
+                print "### Wrong token found, expected ", context.getTokenStack()[-2]
+                print "### But found '" + context.getTokenStack()[-1] + "'"
                 print "### Stack trace :"
                 for token in context.getTokenStack():
                     print '-', token

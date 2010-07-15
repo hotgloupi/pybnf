@@ -31,8 +31,6 @@ class Context(object):
 
     # stack and rules are left untouched
     def restore(self, backup):
-        self.pushToken("#l." + str(self._cur_line) + ": '" +
-                       backup._buf[0 : len(backup._buf) - len(self._buf)] + "'")
         self._file = backup._file
         self._buf = backup._buf
         self._file.seek(backup._save_pos)
@@ -75,7 +73,9 @@ class Context(object):
             if self.feedFromFile() == False or len(self._buf) < len(string):
                 return False
         if not self._buf.startswith(string):
+            self.pushToken('#l.' + str(self._cur_line) + ': ' + self._buf.replace('\n', '\\n'))
             return False
+        self.pushToken('#l.' + str(self._cur_line) + ': ' + self._buf.replace('\n', '\\n'))
         self.readSize(len(string))
         return True
 
@@ -88,12 +88,14 @@ class Context(object):
             if matchlist is not None:
                 matchlist.append(res.group(0))
             return True
+        self.pushToken('#l.' + str(self._cur_line) + ': ' + self._buf.replace('\n', '\\n'))
         return False
 
     def readSize(self, size):
         if len(self._buf) < size:
             if self.feedFromFile() == False or len(self._buf) < size:
                 return False
+        self.pushToken('#l.' + str(self._cur_line) + ': ' + self._buf.replace('\n', '\\n'))
         self._buf = self._buf[size:]
         return True
 
