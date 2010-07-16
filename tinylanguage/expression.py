@@ -30,36 +30,23 @@ class BinaryInfixOperator(Group):
         Literal('|')
     ]
 
-class Number(Identifier):
-    __default_regex__ = r'[0-9]+'
-    def onMatch(self, context):
-        print "found number", self.id
-
-class Value(Group):
-    __group__ = [
-        Number
-    ]
-
-
 
 class Expression(Group):
     __group__ = None
     __recursive_group__ = True
     _parenthesis = 0
 
-    def __init__(self):
+    def __init__(self, group=None, min=1, max=1):
+        from tinylanguage.value import Value
         Group.__init__(self, [
-            Group(['(', TokenFunctor(self.onLeftParenthesis)], min=0, max=-1),
-            Group([UnaryPrefixOperator], min=0, max=-1),
-            Value,
-            Group([UnaryPostfixOperator], min=0, max=1),
+            Group(['(', Expression, ')'])
+            | Group([
+                Group([UnaryPrefixOperator], min=0, max=-1),
+                Value,
+                Group([UnaryPostfixOperator], min=0, max=1),
+            ]),
             Group([BinaryInfixOperator, Expression], min=0, max=-1),
-            Group([
-                TokenFunctor(self.canHaveRightParenthesis),
-                ')',
-                TokenFunctor(self.onRightParenthesis)
-            ], min=0, max=-1)
-        ])
+        ], min=min, max=max)
 
     def onLeftParenthesis(self, context):
         self._parenthesis += 1
@@ -76,3 +63,4 @@ class Expression(Group):
         if self._parenthesis != 0:
             raise Exception("Wrong number of parenthesis")
         print "match !!!"
+

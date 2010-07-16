@@ -61,8 +61,8 @@ class Token(object):
                     print '-', token
                 return False
         except Exception as e:
-#            from traceback import print_exc
-#            print_exc()
+            from traceback import print_exc
+            print_exc()
             print "### l.", context.getCurrentLine(), ":", e
             print "### Stack trace :"
             for token in context.getTokenStack():
