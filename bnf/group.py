@@ -95,12 +95,12 @@ class Group(Token):
         return res
 
     def match(self, context):
-        debug = False
+        debug = True
         global indent
         indent += 1
         i = 0
         context.pushToken(self)
-        while True:
+        while i < self.getMaxMatch(context) or self.getMaxMatch(context) == -1:
             backup = context.clone()
             for index, token in enumerate(self._group):
                 if inspect.isclass(token):
@@ -131,8 +131,7 @@ class Group(Token):
                     self.onSubMatch(context, token)
                     context.popToken(start=token)
             i += 1
-            if i >= self.getMaxMatch(context) and self.getMaxMatch(context) != -1:
-                break
+
         if debug:
             print '-' * indent, i, "found:", str(self)
         indent -= 1

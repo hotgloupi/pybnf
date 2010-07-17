@@ -25,9 +25,12 @@ class FunctionCall(Group):
             ')'
         ], min=min, max=max)
 
+
 class Value(Group):
     __group__ = [
         Number | FunctionCall
     ]
 
+    def __str__(self):
+        return 'class"Value"'
 
