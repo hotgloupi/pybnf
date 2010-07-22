@@ -9,7 +9,7 @@ class Balise(Group):
     __recursive_group__ = True
 
     def __init__(self):
-        super(Balise, self).__init__([
+        Group.__init__(self, [
             '<', NamedToken('open', Identifier), '>',
             NamedToken('content', NamedToken('data', Identifier(r'[^<]+')) | Group(Balise, min=0, max=-1)),
             '</', NamedToken('close', Identifier), '>',
@@ -26,8 +26,6 @@ class Balise(Group):
             context.setNodeData(self._node_content.getToken().getByName('data').getToken().id)
         elif token == self._close_tag:
             context.endNode(token.getToken().id)
-        else:
-            print token
 
     def hasSameTag(self, context):
         open_tag = self.getByName('open').getToken().id
