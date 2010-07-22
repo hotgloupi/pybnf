@@ -95,7 +95,7 @@ class Group(Token):
         return res
 
     def match(self, context):
-        debug = True
+        debug = False
         global indent
         indent += 1
         i = 0
