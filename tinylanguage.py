@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 
-from tl.bnf import Language, Context
+from tl.parser import Parser
 
 if __name__ == '__main__':
-    context = Context('test.tl')
+    parser = Parser('test.tl')
 
-    parser = Language()
-    parser.parse(context)
+    ast = parser.parse()
 
 
 
