@@ -6,7 +6,3 @@ from bnf import Identifier
 class Variable(Identifier):
     __regex__ = r'[a-zA-Z_][a-zA-Z0-9_]*'
 
-    def onMatch(self, context):
-        print "var", self.id
-
-
