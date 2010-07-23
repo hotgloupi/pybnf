@@ -2,7 +2,8 @@
 
 from bnf import Context as BaseContext
 
-from tl.parser.scope import Scope
+from tl.ast import Scope,           \
+                   Expression
 
 class Context(BaseContext):
 
