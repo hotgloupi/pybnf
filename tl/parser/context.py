@@ -28,7 +28,7 @@ class Context(BaseContext):
         return self._cur_scope
 
     def beginExpression(self):
-        self._cur_expression = []
+        self._cur_expression = Expression()
         self._expressions.append(self._cur_expression)
 
     def endExpression(self):

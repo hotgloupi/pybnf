@@ -6,23 +6,7 @@ from tl.bnf.type import Type
 from tl.bnf.variable import Variable
 from tl.bnf.endstatement import EndStatement
 from tl.bnf.expression import Expression
-
-def cleanExpression(expr):
-    if isinstance(expr, list):
-        if len(expr) == 1:
-            return cleanExpression(expr[0])
-        else:
-            return list(cleanExpression(i) for i in expr)
-    return expr
-
-def printExpression(expr):
-    if isinstance(expr, list):
-        print '(',
-        for i in expr:
-            printExpression(i)
-        print ')',
-    else:
-        print expr,
+from tl import ast
 
 # Declaration ::= Type Variable
 class Declaration(Group):
@@ -51,8 +35,8 @@ class Declaration(Group):
             pass
         type = self.getByName('type').getToken().id
         name = self.getByName('name').getToken().id
-        context.getCurrentScope().addDeclaration(type, name)
         print "declaration", type, name
         printExpression(cleanExpression(expr))
+        context.getCurrentScope().addDeclaration(ast.Variable(type, name, expr))
 
 

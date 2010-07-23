@@ -11,7 +11,7 @@ class Scope(object):
         self._parent = parent
         self._name = name
         self._childs = {}
-        self._declarations = {}
+        self._declarations = []
 
-    def addDeclaration(self, type, name):
-        self._declarations[name] = type
+    def addDeclaration(self, declaration):
+        self._declarations.append(declaration)
