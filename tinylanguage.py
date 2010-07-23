@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 
-from tinylanguage import Language, Context
+from tl.bnf import Language, Context
 
 if __name__ == '__main__':
     context = Context('test.tl')

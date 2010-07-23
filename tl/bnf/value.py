@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 from bnf import Group, Identifier, NamedToken, TokenFunctor
+from tl.bnf.expression import Expression
 
 class Number(Identifier):
     __default_regex__ = r'[0-9]+'
@@ -9,7 +10,7 @@ class Number(Identifier):
         context.getCurrentExpression().append(self.id)
 
 
-from tinylanguage.expression import Expression
+
 class FunctionParam(Expression):
     def match(self, context):
         context.beginExpression()

@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 from bnf import Group, EOF
-from tinylanguage.statement import Statement
+from tl.bnf.statement import Statement
 
 # Language ::= [Statement]*
 class Language(Group):

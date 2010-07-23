@@ -55,7 +55,7 @@ class Expression(Group):
     ]
 
     def __init__(self, group=None, min=1, max=1):
-        from tinylanguage.value import Value
+        from tl.bnf.value import Value
         expr = []
         expr.append(
             SubExpr(group=(Group(['(', Expression, ')']) | Value))

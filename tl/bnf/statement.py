@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 from bnf import Group
-from tinylanguage.declaration import Declaration
+from tl.bnf.declaration import Declaration
 
 # Statement ::= Declaration EndStatement
 class Statement(Group):

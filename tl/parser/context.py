@@ -2,7 +2,7 @@
 
 from bnf import Context as BaseContext
 
-from tinylanguage.scope import Scope
+from tl.parser.scope import Scope
 
 class Context(BaseContext):
 

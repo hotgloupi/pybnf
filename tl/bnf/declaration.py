@@ -2,10 +2,10 @@
 
 from bnf import Group, NamedToken, Literal
 
-from tinylanguage.type import Type
-from tinylanguage.variable import Variable
-from tinylanguage.endstatement import EndStatement
-from tinylanguage.expression import Expression
+from tl.bnf.type import Type
+from tl.bnf.variable import Variable
+from tl.bnf.endstatement import EndStatement
+from tl.bnf.expression import Expression
 
 def cleanExpression(expr):
     if isinstance(expr, list):
