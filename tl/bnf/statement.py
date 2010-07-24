@@ -1,11 +1,12 @@
 # -*- encoding: utf-8 -*-
 
 from bnf import Group
-from tl.bnf.declaration import Declaration
+from tl.bnf.variable_declaration import VariableDeclaration
+from tl.bnf.affectation import Affectation
 
-# Statement ::= Declaration EndStatement
+# Statement ::= VariableDeclaration | Affectation
 class Statement(Group):
-    __group__ = [Declaration]
+    __group__ = [VariableDeclaration | Affectation]
 
     def onMatch(self, context):
         print "match  statement"

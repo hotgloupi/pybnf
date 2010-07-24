@@ -12,5 +12,5 @@ class Value(Group):
     ]
 
     def __str__(self):
-        return 'class"Value"'
+        return 'Value'
 

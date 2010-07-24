@@ -6,7 +6,4 @@ from bnf import Identifier
 class Type(Identifier):
     __regex__ = r'[a-zA-Z_][a-zA-Z0-9_]*'
 
-    def onMatch(self, context):
-        print "type", self.id
-
 

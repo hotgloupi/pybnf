@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
 
 from bnf import Group, EOF
-from tl.bnf.statement import Statement
+from tl.bnf.declaration import Declaration
 
 # Language ::= [Statement]*
 class Language(Group):
-    __group__ = [Group([Statement], min=0, max=-1), EOF]
+    __group__ = [Group([Declaration], min=0, max=-1), EOF]
 

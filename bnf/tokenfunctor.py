@@ -44,6 +44,7 @@ class TokenFunctor(Group):
         self._group = list(self._args) + list(self._kwargs.values())
         if self._this is not None:
             self._group.append(self._this)
+        self._named_tokens = {}
 
     def __call__(self, *args, **kwargs):
         new_args = self._args + args
@@ -73,5 +74,5 @@ class TokenFunctor(Group):
         return TokenFunctor(*new_args, **new_kwargs)
 
     def __str__(self):
-        return 'functor"' + self._this.__class__.__name__ + "." + self._method.__name__ + '"'
+        return '' #'functor"' + self._this.__class__.__name__ + "." + self._method.__name__ + '"'
 

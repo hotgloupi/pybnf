@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
-from bnf import Group, Identifier, TokenFunctor, Literal, NamedToken
+from bnf import Group, Identifier, TokenFunctor, Literal, NamedToken, Alternative
+from tl.bnf.variable import Variable
 
 class UnaryPrefixOperator(Group):
     __group__ = [
@@ -27,7 +28,6 @@ class SubExpr(Group):
 
     def __init__(self, operators=None, subexpr=None, group=None, min=1, max=1):
         if operators is not None and subexpr is not None:
-            from bnf import Alternative
             ops = list(BinaryInfixOperator(op) for op in operators)
             Group.__init__(self, [
                 NamedToken('op1', subexpr),
@@ -53,8 +53,12 @@ class Expression(Group):
         ['*', '/'],
         ['+', '-'],
     ]
+    __affect_operators__ = [
+        "=", "+=", "-=", "*=", "/="
+    ]
+    is_affectation = False
 
-    def __init__(self, group=None, min=1, max=1):
+    def __init__(self, is_affectation=False):
         from tl.bnf.value import Value
         expr = []
         expr.append(
@@ -68,6 +72,26 @@ class Expression(Group):
         #print '#'*80
         #print expr[-1]
         #print '#'*80
+        self.is_affectation = is_affectation
+        if is_affectation:
+            ops = list(BinaryInfixOperator(op) for op in self.__affect_operators__)
+            Group.__init__(self, [
+                NamedToken('name', Variable), TokenFunctor(self.pushName),
+                Alternative(ops),
+                expr[-1]
+            ])
+        else:
+            Group.__init__(self, expr[-1])
 
-        Group.__init__(self, expr[-1])
+    def pushName(self, context):
+        name = self.getByName('name').getToken().id
+        if not context.getCurrentScope().hasDeclaration(name):
+            raise Exception("Unknown variable name " + name)
+        context.getCurrentExpression().append(context.getCurrentScope().getDeclaration(name))
+        return True
 
+    def clone(self):
+        return Expression(self.is_affectation)
+
+    def __str__(self):
+        return 'Expression'

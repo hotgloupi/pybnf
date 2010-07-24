@@ -76,6 +76,9 @@ class Group(Token):
         return res
 
     def getByName(self, name):
+        if self._named_tokens is None:
+            print "::::", self.__class__.__name__
+            self._named_tokens = {}
         res = self._named_tokens.get(name)
         if res is not None:
             return res

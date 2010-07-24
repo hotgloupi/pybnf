@@ -34,6 +34,8 @@ class FunctionCall(Group):
 
     def pushName(self, context):
         name = self.getByName('function_name').getToken().id
+        if not context.getCurrentScope().hasDeclaration(name):
+            raise Exception("Unknown function")
         context.getCurrentExpression().append(name)
 
     def match(self, context):

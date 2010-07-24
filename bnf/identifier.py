@@ -52,9 +52,9 @@ class Identifier(Token):
 
     def __str__(self):
         if self.id is not None:
-            return 'i"' + self.id + '"'# + '{' + object.__str__(self) + '}'
+            return '"' + self.id + '"'# + '{' + object.__str__(self) + '}'
         elif self._regex_str is not None:
-            return 'r"' + self._regex_str + '"'# + '{' + object.__str__(self) + '}'
+            return '"'+ self._regex_str + '"'# + '{' + object.__str__(self) + '}'
         else:
             return 'i""'# + '{' + object.__str__(self) + '}'
 

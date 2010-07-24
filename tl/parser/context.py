@@ -15,14 +15,19 @@ class Context(BaseContext):
     def __init__(self, filename):
         BaseContext.__init__(self, filename)
         self._scopes = {}
-        self.pushScope(filename[:-3], None)
         self._expressions = []
 
 
-    def pushScope(self, name, parent):
-        scope = Scope(name, parent)
+    def beginScope(self, name):
+        scope = Scope(name, self._cur_scope)
         self._scopes[name] = scope
         self._cur_scope = scope
+        print "$$ Enter in", name
+        return scope
+
+    def endScope(self):
+        print "$$ Out of", self._cur_scope.name
+        self._cur_scope = self._cur_scope.parent
 
     def getCurrentScope(self):
         return self._cur_scope
@@ -30,6 +35,7 @@ class Context(BaseContext):
     def beginExpression(self):
         self._cur_expression = Expression()
         self._expressions.append(self._cur_expression)
+        return self._cur_expression
 
     def endExpression(self):
         self._expressions.pop()

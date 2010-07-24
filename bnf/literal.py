@@ -65,4 +65,4 @@ class Literal(Token):
             print self
 
     def __str__(self):
-        return '"' + str(self._token) +'"'
+        return str(self._token)

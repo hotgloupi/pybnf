@@ -26,6 +26,7 @@ class NamedToken(Token):
     def onMatch(self): pass
 
     def __str__(self):
+        return str(self._token)
         return "{'" + self._name + "': " + str(self._token) + "}"
 
     def __or__(self, other):

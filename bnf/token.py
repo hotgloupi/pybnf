@@ -8,9 +8,9 @@ from abc import abstractmethod, ABCMeta
 class MetaToken(ABCMeta):
     def __str__(cls):
         if cls.__token__ is not None:
-            return 'class"' + cls.__name__ + '<' + str(cls.__token__) +'>"'
+            return str(cls.__token__)
         else:
-            return 'class"' + cls.__name__ + '"'
+            return cls.__name__
 
     def __or__(cls, other_token):
         from bnf.alternative import Alternative
@@ -70,7 +70,7 @@ class Token(object):
         return False
 
     def __str__(self):
-        return 't"' + str(self.__class__.__token__) +'"'
+        return str(self.__class__.__token__)
 
     def __or__(self, other_token):
         from bnf.alternative import Alternative

@@ -11,4 +11,7 @@ class Parser(object):
         self._context = Context(filename)
 
     def parse(self):
-        return Language().parse(self._context)
+        main_scope = self._context.beginScope('__main__')
+        res = Language().parse(self._context)
+        self._context.endScope()
+        print main_scope
