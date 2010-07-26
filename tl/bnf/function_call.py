@@ -12,7 +12,7 @@ class FunctionParam(Expression):
         expr = context.getCurrentExpression()
         context.endExpression()
         if res == True:
-            context.getCurrentExpression().append(expr)
+            context.getCurrentExpression().append(expr.clean())
         return res
 
 class FunctionCall(Group):
@@ -37,6 +37,7 @@ class FunctionCall(Group):
         if not context.getCurrentScope().hasDeclaration(name):
             raise Exception("Unknown function")
         context.getCurrentExpression().append(name)
+        return True
 
     def match(self, context):
         context.beginExpression()

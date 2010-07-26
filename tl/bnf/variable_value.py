@@ -7,5 +7,6 @@ class VariableValue(Variable):
 
     def onMatch(self, context):
         if not context.getCurrentScope().hasDeclaration(self.id):
+            print context.getCurrentScope()
             raise Exception("Unknown variable " + self.id)
         context.getCurrentExpression().append(self.id)

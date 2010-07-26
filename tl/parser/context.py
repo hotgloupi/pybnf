@@ -4,10 +4,11 @@ from bnf import Context as BaseContext
 
 from tl.ast import Scope,           \
                    Expression
+import random
+random.seed(0)
 
 class Context(BaseContext):
 
-    _scopes = None
     _cur_scope = None
     _expressions = None
     _cur_expression = None
@@ -18,15 +19,23 @@ class Context(BaseContext):
         self._expressions = []
 
 
-    def beginScope(self, name):
+    def beginScope(self, name=None, generate_unique=False):
+        if generate_unique == True:
+            if name is None:
+                name = "Anonymous"
+            name += str(random.randint(1, 9999))
+            if self._cur_scope is not None:
+                while self._cur_scope.hasDeclaration(name):
+                    name += str(random.randint(1, 9))
+        if name is None:
+            raise Exception("Cannot begin scope with no name")
         scope = Scope(name, self._cur_scope)
-        self._scopes[name] = scope
         self._cur_scope = scope
-        print "$$ Enter in", name
+#        print "$$ Enter in", name
         return scope
 
     def endScope(self):
-        print "$$ Out of", self._cur_scope.name
+#        print "$$ Out of", self._cur_scope.name
         self._cur_scope = self._cur_scope.parent
 
     def getCurrentScope(self):

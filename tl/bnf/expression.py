@@ -2,6 +2,7 @@
 
 from bnf import Group, Identifier, TokenFunctor, Literal, NamedToken, Alternative
 from tl.bnf.variable import Variable
+from tl import ast
 
 class UnaryPrefixOperator(Group):
     __group__ = [
@@ -50,7 +51,9 @@ class Expression(Group):
     __group__ = None
     __recursive_group__ = True
     __operators__ = [
-        ['*', '/'],
+        ['=='],
+        ['^'],
+        ['*', '/', '%'],
         ['+', '-'],
     ]
     __affect_operators__ = [
@@ -87,7 +90,8 @@ class Expression(Group):
         name = self.getByName('name').getToken().id
         if not context.getCurrentScope().hasDeclaration(name):
             raise Exception("Unknown variable name " + name)
-        context.getCurrentExpression().append(context.getCurrentScope().getDeclaration(name))
+        declaration = context.getCurrentScope().getDeclaration(name)
+        context.getCurrentExpression().append(ast.VariableReference(declaration))
         return True
 
     def clone(self):

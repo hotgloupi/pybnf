@@ -76,13 +76,8 @@ class Group(Token):
         return res
 
     def getByName(self, name):
-        if self._named_tokens is None:
-            print "::::", self.__class__.__name__
-            self._named_tokens = {}
-        res = self._named_tokens.get(name)
-        if res is not None:
-            return res
         groups = []
+        res = None
         for token in self._group:
             if isinstance(token, NamedToken) and token.getName() == name:
                 res = token
@@ -112,9 +107,15 @@ class Group(Token):
                         self._group[index] = token
                     else:
                         raise Exception("Wrong object found in the group")
+                #elif i > 0:
+                #    token = token.clone()
+                #    self._group[index] = token
+
                 if debug:
                     print '-' * indent, i, "search:", str(token)
                 has_matched = token.match(context)
+                if not isinstance(has_matched, bool):
+                    raise Exception("Match function must return a bool ("+str(token.__class__)+")")
                 if has_matched == False:
                     if i >= self.getMinMatch(context):
                         if debug:
@@ -150,7 +151,10 @@ class Group(Token):
     def __str__(self):
         strings = []
         for token in self._group:
-            strings.append(str(token))
+            if hasattr(token, '__recursive_group__') and token.__recursive_group__ == True:
+                strings.append(token.__class__.__name__)
+            else:
+                strings.append(str(token))
         strbase = '[' + ' '.join(strings) + ']'
 
         min = self.getMinMatch(None)

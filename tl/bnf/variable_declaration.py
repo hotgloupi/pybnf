@@ -35,8 +35,7 @@ class VariableDeclaration(Group):
             pass
         type = self.getByName('type').getToken().id
         name = self.getByName('name').getToken().id
-        print "declaration", type, name, "=", expr
-        if context.getCurrentScope().hasDeclaration(name):
+        if context.getCurrentScope().hasDeclaration(name, recursive=False):
             raise Exception("Cannot redefine " + name)
         context.getCurrentScope().declarations.append(ast.Variable(type, name, expr))
 

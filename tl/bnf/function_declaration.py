@@ -7,7 +7,7 @@ from tl.bnf.variable import Variable
 from tl.bnf.statement import Statement
 from tl import ast
 
-# FunctionDeclaration ::= Type Variable "(" [[Type Variable] [ "," Type Variable]*]? ")" "{" "}"
+# FunctionDeclaration ::= Type Variable "(" [[Type Variable] [ "," Type Variable]*]? ")" "{" [Statement]* "}"
 class FunctionDeclaration(Group):
     _params = None
 
@@ -36,8 +36,7 @@ class FunctionDeclaration(Group):
             Group([Statement], min=0, max=-1),
             "}",
         ])
-        self._params = []
-        self._scope = None
+
 
     def clone(self):
         return FunctionDeclaration()
@@ -57,20 +56,25 @@ class FunctionDeclaration(Group):
     def startScope(self, context):
         type = self.getByName('type').getToken().id
         name = self.getByName('name').getToken().id
-        if context.getCurrentScope().hasDeclaration(name):
+        if context.getCurrentScope().hasDeclaration(name, recursive=False):
             raise Exception("Cannot redefine " + name)
         self._scope = context.beginScope(name)
         self._function = ast.Function(type, name, self._params)
         self._scope.declarations.append(self._function)
+        print "declare", self._function, self._params
+        for p in self._params:
+            self._scope.declarations.append(ast.Variable(p[0], p[1], None))
+        return True
 
     def match(self, context):
+        self._params = []
+        self._scope = None
         res = Group.match(self, context)
-        if res == True:
+        if self._scope is not None:
             context.endScope()
         return res
 
     def onMatch(self, context):
-        print "declaration", self._function
         self._scope.parent.childs.append(self._scope)
         self._scope.parent.declarations.append(self._function)
 

@@ -118,12 +118,17 @@ class Context(object):
     def popToken(self, start=None):
         if start is None:
             self._token_stack.pop()
-        elif start in self._token_stack:
-            self._token_stack = self._token_stack[:self._token_stack.index(start) + 1]
-#            print "pop:\n", '\n'.join('- ' + str(token) for token in self._token_stack)
+            return
         else:
-            print '###', start, "not found in stack:"
-            print '\n'.join('- ' + str(token) for token in self._token_stack)
+            i = len(self._token_stack) - 1
+            while i > -1:
+                if start == self._token_stack[i]:
+                    self._token_stack = self._token_stack[:i + 1]
+                    return
+                i -= 1
+#            print "pop:\n", '\n'.join('- ' + str(token) for token in self._token_stack)
+        print '###', start, "not found in stack:"
+        print '\n'.join('- ' + str(token) for token in self._token_stack)
 
     def getTokenStack(self):
         return self._token_stack

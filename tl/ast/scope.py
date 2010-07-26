@@ -17,13 +17,14 @@ class Scope(object):
         self.declarations = []
         self.statements = []
 
-    def hasDeclaration(self, name):
+    def hasDeclaration(self, name, recursive=True):
         for d in self.declarations:
             if name == d.name:
                 return True
-        if self.parent is None:
-            return False
-        return self.parent.hasDeclaration(name)
+        if self.parent is not None and recursive == True:
+            return self.parent.hasDeclaration(name, recursive=True)
+        return False
+
 
     def getDeclaration(self, name):
         for d in self.declarations:
@@ -36,10 +37,17 @@ class Scope(object):
 
     def __str__(self):
         global indent
-        res = " " * indent + "* Scope " + self.name + " declarations :\n"
+        res = " " * indent + "* Scope " + str(self.name) + " declarations :\n"
         for declaration in self.declarations:
             res += " " * indent + "      -- "+ str(declaration) + "\n"
-            res += " " * indent + "      -- "+ str(self.statements) + "\n"
+
+        if len(self.statements) > 0:
+            res += " " * indent + "      -- statements:\n"
+            for statement in self.statements:
+                res += " " * (indent + 2) + "      $ "+ str(statement) + "\n"
+        else:
+            res += " " * indent + "      -- no statements.\n"
+
         indent += 2
         for child in self.childs:
             res += str(child)

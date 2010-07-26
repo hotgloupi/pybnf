@@ -58,7 +58,10 @@ class TokenFunctor(Group):
 
     def match(self, context):
         context.pushToken(self)
-        return self.__call__(context)
+        res = self.__call__(context)
+        if not isinstance(res, bool):
+            raise Exception("TokenFunctor bounded method must return a bool")
+        return res
 
     def clone(self):
         new_args = []

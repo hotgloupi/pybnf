@@ -14,10 +14,7 @@ class MetaToken(ABCMeta):
 
     def __or__(cls, other_token):
         from bnf.alternative import Alternative
-        if inspect.isclass(other_token):
-            return Alternative([cls(), other_token()])
-        else:
-            return Alternative([cls(), other_token])
+        return Alternative([cls, other_token])
 
 
 class Token(object):
@@ -58,7 +55,8 @@ class Token(object):
                 print "### But found '" + context.getTokenStack()[-1] + "'"
                 print "### Stack trace :"
                 for token in context.getTokenStack():
-                    print '-', token
+                    print '-', token.__class__
+#                    print '-', token
                 return False
         except Exception as e:
             from traceback import print_exc
@@ -66,6 +64,7 @@ class Token(object):
             print "### l.", context.getCurrentLine(), ":", e
             print "### Stack trace :"
             for token in context.getTokenStack():
+                print '-', token.__class__
                 print '-', token
         return False
 

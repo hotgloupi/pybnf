@@ -11,4 +11,4 @@ class Variable(object):
         self.value = value
 
     def __str__(self):
-        return self.type + " " + self.name + " = " + str(self.value)
+        return str(self.type) + " " + str(self.name) + " = " + str(self.value)
