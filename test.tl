@@ -27,7 +27,6 @@ int f(char c, string pouf)
    while (k < 89)
     {
         k += 1;
-        break;
     }
 }
 
