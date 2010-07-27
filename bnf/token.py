@@ -55,8 +55,7 @@ class Token(object):
                 print "### But found '" + context.getTokenStack()[-1] + "'"
                 print "### Stack trace :"
                 for token in context.getTokenStack():
-                    print '-', token.__class__
-#                    print '-', token
+                    print '-', token
                 return False
         except Exception as e:
             from traceback import print_exc
@@ -64,7 +63,6 @@ class Token(object):
             print "### l.", context.getCurrentLine(), ":", e
             print "### Stack trace :"
             for token in context.getTokenStack():
-                print '-', token.__class__
                 print '-', token
         return False
 

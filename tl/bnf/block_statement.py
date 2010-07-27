@@ -7,5 +7,5 @@ from tl.bnf.loop_block import LoopBlock
 # BlockStatement ::= ConditionalBlock | LoopBlock | TryCatchBlock
 class BlockStatement(Group):
     __group__ = [
-        ConditionalBlock | LoopBlock
+        LoopBlock | ConditionalBlock
     ]

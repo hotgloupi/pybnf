@@ -24,6 +24,11 @@ int f(char c, string pouf)
     {
         g(12);
     }
+   while (k < 89)
+    {
+        k += 1;
+        break;
+    }
 }
 
 class A

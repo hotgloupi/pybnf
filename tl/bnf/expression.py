@@ -4,22 +4,6 @@ from bnf import Group, Identifier, TokenFunctor, Literal, NamedToken, Alternativ
 from tl.bnf.variable import Variable
 from tl import ast
 
-class UnaryPrefixOperator(Group):
-    __group__ = [
-        Literal('++') |
-        Literal('--') |
-        Literal('!') |
-        Literal('+') |
-        Literal('-')
-    ]
-
-class UnaryPostfixOperator(Group):
-    __group__ = [
-        Literal('++') |
-        Literal('--')
-    ]
-
-
 class BinaryInfixOperator(Literal):
 
     def onMatch(self, context):
@@ -51,7 +35,7 @@ class Expression(Group):
     __group__ = None
     __recursive_group__ = True
     __operators__ = [
-        ['=='],
+        ['<', '<=', '==', '>=', '>'],
         ['^'],
         ['*', '/', '%'],
         ['+', '-'],
@@ -89,7 +73,8 @@ class Expression(Group):
     def pushName(self, context):
         name = self.getByName('name').getToken().id
         if not context.getCurrentScope().hasDeclaration(name):
-            raise Exception("Unknown variable name " + name)
+            print "Unknown variable name " + name
+            return False
         declaration = context.getCurrentScope().getDeclaration(name)
         context.getCurrentExpression().append(ast.VariableReference(declaration))
         return True
