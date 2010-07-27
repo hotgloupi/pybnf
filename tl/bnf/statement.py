@@ -1,18 +1,24 @@
 # -*- encoding: utf-8 -*-
 
 from bnf import Group
-from tl.bnf.variable_declaration import VariableDeclaration
 from tl.bnf.affectation import Affectation
 from tl.bnf.function_call_statement import FunctionCallStatement
 from tl.bnf.block_statement import BlockStatement
+from tl.bnf.return_statement import ReturnStatement
 
-# Statement ::= BlockStatement | VariableDeclaration | Affectation | FunctionCallStatement
+# Statement ::= BlockStatement | Declaration | Affectation | FunctionCallStatement | ReturnStatement
 class Statement(Group):
     __recursive_group__ = True
-    __group__ = [
-        BlockStatement
-        | VariableDeclaration
-        | Affectation
-        | FunctionCallStatement
-    ]
+    def __init__(self):
+        from tl.bnf.declaration import Declaration
+        Group.__init__(self, [
+            BlockStatement
+            | ReturnStatement
+            | Declaration
+            | Affectation
+            | FunctionCallStatement
+        ])
+
+    def clone():
+        return Statement()
 

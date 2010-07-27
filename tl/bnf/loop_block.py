@@ -11,15 +11,5 @@ class LoopBlock(Group):
             Block("while", True)
         ])
 
-    def match(self, context):
-        context.feedFromFile()
-        print "Trying", context.getBuf(), self
-        res = Group.match(self, context)
-        print " ==>", res
-        return res
-
-    def onMatch(self, context):
-        print "yipii"
-
     def clone(self):
         return LoopBlock()

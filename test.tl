@@ -1,49 +1,34 @@
 
-int pif = 3;
-int i_j9  = (((12-1)+(3*4))*4) * pif - "kaka";
-float paf;
-string k = "pif";
-
-int g()
-{
-    k = 12;
-}
-
-int f(char c, string pouf)
-{
-    pif += g(1);
-    g(38);
-    if (pif + 0)
-    {
-        c = c + 2;
-        k = 12;
-        k += 4;
-        int paf;
-    }
-    else if (c == 2)
-    {
-        g(12);
-    }
-   while (k < 89)
-    {
-        k += 1;
-    }
-}
-
 class A
 {
-    int f(int k)
+    int _m;
+    flaot _m2;
+
+    bool __init__(A self, int m)
     {
-        k = "pouf";
+        _m = m.pif +5;
+        int pif = 12 + m;
+        int hello(A self)
+        {
+
+        }
+        while (pif > 0)
+        {
+            pif -= 1;
+        }
+
+
     }
+
+    string __str__(A self, int m)
+    {
+        _m = m;
+        int pif = 12 + m;
+        while (pif < 89)
+        {
+            pif += 1 + 1 +2;
+        }
+        return "pif";
+    }
+
 }
-
-class B {}
-
-class AB : A, B
-{
-    int k;
-    int pif = 3;
-}
-
-A a;

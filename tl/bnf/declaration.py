@@ -7,4 +7,4 @@ from tl.bnf.class_declaration import ClassDeclaration
 
 # Declaration ::= FunctionDeclaration | VariableDeclaration | ClassDeclaration
 class Declaration(Group):
-    __group__ = [FunctionDeclaration | VariableDeclaration | ClassDeclaration]
+    __group__ = [VariableDeclaration | FunctionDeclaration | ClassDeclaration]

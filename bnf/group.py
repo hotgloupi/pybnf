@@ -112,15 +112,15 @@ class Group(Token):
                 #    self._group[index] = token
 
                 if debug:
-                    print '-' * indent, i, "search:", str(token)
+                    print '-' * indent, i,'(',context.getCurrentLine(),')', "search:", token.__class__.__name__, str(token)
                 has_matched = token.match(context)
                 if not isinstance(has_matched, bool):
                     raise Exception("Match function must return a bool ("+str(token.__class__)+")")
                 if has_matched == False:
                     if i >= self.getMinMatch(context):
                         if debug:
-                            print '-' * indent, i, "not found:", str(token)
-                            print '-' * indent, i, "but validating", str(self)
+                            print '-' * indent, i,'(',context.getCurrentLine(),')', "not found:", token.__class__.__name__, str(token)
+                            print '-' * indent, i,'(',context.getCurrentLine(),')', "but validating", self.__class__.__name__, str(self)
                         self.onMatch(context)
                         context.restore(backup)
                         indent -= 1
@@ -129,7 +129,7 @@ class Group(Token):
                     indent -= 1
                     context.restore(backup)
                     if debug:
-                        print '-' * indent, i, "not found:", str(token)
+                        print '-' * indent, i, "not found:", '(',context.getCurrentLine(),')',token.__class__.__name__, str(token)
                     return False
                 else:
                     self.onSubMatch(context, token)
@@ -137,7 +137,7 @@ class Group(Token):
             i += 1
 
         if debug:
-            print '-' * indent, i, "found:", str(self)
+            print '-' * indent, i, '(',context.getCurrentLine(),')',"found:", self.__class__.__name__, str(self)
         indent -= 1
         self.onMatch(context)
         return True
