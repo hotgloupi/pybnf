@@ -4,7 +4,7 @@ class Type(object):
 
     def __init__(self, name, cname=None):
         self.name = name
-        self.cname = None
+        self.cname = cname
 
     def __str__(self):
         return 'type '+ self.name

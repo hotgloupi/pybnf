@@ -3,7 +3,8 @@
 from bnf import Context as BaseContext
 
 from tl.ast import Scope,           \
-                   Expression
+                   Expression,      \
+                   SCOPE_TYPES
 import random
 random.seed(0)
 
@@ -19,7 +20,7 @@ class Context(BaseContext):
         self._expressions = []
 
 
-    def beginScope(self, name=None, generate_unique=False):
+    def beginScope(self, type, name=None, generate_unique=False):
         if generate_unique == True:
             if name is None:
                 name = "Anonymous"
@@ -29,7 +30,7 @@ class Context(BaseContext):
                     name += str(random.randint(1, 9))
         if name is None:
             raise Exception("Cannot begin scope with no name")
-        scope = Scope(name, self._cur_scope)
+        scope = Scope(type, name, self._cur_scope)
         self._cur_scope = scope
 #        print "$$ Enter in", name
         return scope

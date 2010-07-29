@@ -1,5 +1,12 @@
 # -*- encoding: utf-8 -*-
 
+TYPES = {
+    'package':0,
+    'class': 1,
+    'function': 2,
+    'block': 3,
+}
+
 indent = 0
 
 class Scope(object):
@@ -10,7 +17,8 @@ class Scope(object):
     declarations = None
     statements = None
 
-    def __init__(self, name, parent):
+    def __init__(self, type, name, parent):
+        self.type = type
         self.parent = parent
         self.name = name
         self.childs = []

@@ -57,7 +57,10 @@ class ClassDeclaration(Group):
         return True
 
     def startScope(self, context):
-        self._scope = context.beginScope(self._class_name)
+        self._scope = context.beginScope(
+            ast.SCOPE_TYPES['class'],
+            name=self._class_name
+        )
         self._class = ast.Class(self._class_name, self._bases)
         self._scope.declarations.append(self._class)
         return True

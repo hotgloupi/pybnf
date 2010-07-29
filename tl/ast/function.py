@@ -12,7 +12,7 @@ class Function(object):
         self.params = params
 
     def __str__(self):
-        res = self.type + ' ' + self.name + '('
+        res = str(self.type) + ' ' + self.name + '('
         params = []
         for p in self.params:
             params.append(str(p[0]) + ' ' + str(p[1]))

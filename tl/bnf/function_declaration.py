@@ -96,8 +96,9 @@ class FunctionDeclaration(Group):
         if not context.getCurrentScope().hasDeclaration(type):
             raise Exception("Unknown return type: "+type)
             return False
-        self._scope = context.beginScope(name)
-        self._function = ast.Function(type, name, self._params)
+        self._scope = context.beginScope(ast.SCOPE_TYPES['function'], name=name)
+        ref_type = ast.Reference(context.getCurrentScope().getDeclaration(type))
+        self._function = ast.Function(ref_type, name, self._params)
         self._scope.declarations.append(self._function)
         for p in self._params:
             self._scope.declarations.append(ast.Variable(p[0], p[1], None))

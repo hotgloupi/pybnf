@@ -15,7 +15,12 @@ class Block(Group):
             from tl.bnf.expression import Expression
             group.extend(["(", Expression, ")"])
         from tl.bnf.statement import Statement
-        group.extend(["{", Group([Statement], min=0, max=-1), "}", TokenFunctor(self.endScope)])
+        group.extend([
+            "{",
+            Group([Statement], min=0, max=-1),
+            "}",
+            TokenFunctor(self.endScope)]
+        )
         Group.__init__(self, group, min=min, max=max)
         self._scope = None
         self._expr = None
@@ -27,7 +32,11 @@ class Block(Group):
             name = "-".join(self._keywords)+'_'
         else:
             name = str(self._keywords)+'_'
-        self._scope = context.beginScope(name, generate_unique=True)
+        self._scope = context.beginScope(
+            ast.SCOPE_TYPES['block'],
+            name,
+            generate_unique=True
+        )
         res = Group.match(self, context)
         if self._with_expression == True:
             context.endExpression()
