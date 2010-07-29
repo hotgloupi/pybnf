@@ -53,17 +53,17 @@ class Token(object):
             else:
                 print "### Wrong token found, expected ", context.getTokenStack()[-2]
                 print "### But found '" + context.getTokenStack()[-1] + "'"
-                print "### Stack trace :"
-                for token in context.getTokenStack():
-                    print '-', token
+#                print "### Stack trace :"
+#                for token in context.getTokenStack():
+#                    print '-', token
                 return False
         except Exception as e:
             from traceback import print_exc
             print_exc()
             print "### l.", context.getCurrentLine(), ":", e
-            print "### Stack trace :"
-            for token in context.getTokenStack():
-                print '-', token
+#            print "### Stack trace :"
+#            for token in context.getTokenStack():
+#                print '-', token
         return False
 
     def __str__(self):

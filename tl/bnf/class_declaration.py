@@ -14,7 +14,9 @@ class ClassDeclaration(Group):
         from tl.bnf.declaration import Declaration
         from tl.bnf.variable import Variable
         Group.__init__(self, [
-            "class", NamedToken('class_name', Variable), TokenFunctor(self.pushClassName),
+            "class",
+            NamedToken('class_name', Variable),
+            TokenFunctor(self.pushClassName),
             Group([
                 ":", NamedToken('base0', Variable), TokenFunctor(self.pushBase0),
                 Group([
@@ -58,7 +60,6 @@ class ClassDeclaration(Group):
         self._scope = context.beginScope(self._class_name)
         self._class = ast.Class(self._class_name, self._bases)
         self._scope.declarations.append(self._class)
-        print "declare", self._class
         return True
 
     def match(self, context):
@@ -69,6 +70,8 @@ class ClassDeclaration(Group):
         res = Group.match(self, context)
         if self._scope is not None:
             context.endScope()
+        if res == False and self._class_name is not None:
+            raise Exception("Error in class declaration " + self._class_name)
         return res
 
     def onMatch(self, context):

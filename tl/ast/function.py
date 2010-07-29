@@ -15,7 +15,7 @@ class Function(object):
         res = self.type + ' ' + self.name + '('
         params = []
         for p in self.params:
-            params.append(p[0] + ' ' + p[1])
+            params.append(str(p[0]) + ' ' + str(p[1]))
         res += ", ".join(params) + ")"
         return res
 

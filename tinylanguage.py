@@ -4,8 +4,8 @@
 from tl.parser import Parser
 
 if __name__ == '__main__':
-    parser = Parser('test.tl')
+    parser = Parser()
 
-    ast = parser.parse()
+    ast = parser.parse('test.tl')
 
 

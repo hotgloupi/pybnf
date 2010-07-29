@@ -1,34 +1,12 @@
 
-class A
+class string
 {
-    int _m;
-    flaot _m2;
+    c_string _string;
+    c_uint _size;
 
-    bool __init__(A self, int m)
+    c_void __init__(string self)
     {
-        _m = m.pif +5;
-        int pif = 12 + m;
-        int hello(A self)
-        {
-
-        }
-        while (pif > 0)
-        {
-            pif -= 1;
-        }
-
-
+        self._string = 0;
+        self._size = 0;
     }
-
-    string __str__(A self, int m)
-    {
-        _m = m;
-        int pif = 12 + m;
-        while (pif < 89)
-        {
-            pif += 1 + 1 +2;
-        }
-        return "pif";
-    }
-
 }

@@ -7,6 +7,34 @@ from tl.bnf.variable import Variable
 from tl.bnf.statement import Statement
 from tl import ast
 
+class FunctionDeclarationParam(Group):
+    def __init__(self):
+        Group.__init__(self, [
+            Group([
+                NamedToken('type', Type),
+                NamedToken('name', Variable),
+                TokenFunctor(self.pushBoth)
+            ])| Group([
+                NamedToken('auto_name', Variable),
+                TokenFunctor(self.pushName)
+            ])
+        ])
+
+    def clone(self):
+        return FunctionDeclarationParam()
+
+    def pushBoth(self, context):
+        self.type = self.getByName('type').getToken().id
+        self.name = self.getByName('name').getToken().id
+        self.has_both = True
+        return True
+
+    def pushName(self, context):
+        self.type = 'auto'
+        self.name = self.getByName('auto_name').getToken().id
+        self.has_both = False
+        return True
+
 # FunctionDeclaration ::= Type Variable "(" [[Type Variable] [ "," Type Variable]*]? ")" "{" [Statement]* "}"
 class FunctionDeclaration(Group):
     _params = None
@@ -19,14 +47,12 @@ class FunctionDeclaration(Group):
             "(",
             Group([
                 [
-                    NamedToken('param_type', Type),
-                    NamedToken('param_name', Variable),
+                    NamedToken('param', FunctionDeclarationParam),
                     TokenFunctor(self.pushParam),
                 ],
                 Group([
                     ",",
-                    NamedToken('oparam_type', Type),
-                    NamedToken('oparam_name', Variable),
+                    NamedToken('oparam', FunctionDeclarationParam),
                     TokenFunctor(self.pushOtherParam),
                 ], min=0, max=-1)
             ], min=0),
@@ -42,26 +68,37 @@ class FunctionDeclaration(Group):
         return FunctionDeclaration()
 
     def pushParam(self, context):
-        type = self.getByName('param_type').getToken().id
-        name = self.getByName('param_name').getToken().id
-        self._params.append([type, name])
+        token = self.getByName('param').getToken()
+        type = token.type
+        name = token.name
+        if not context.getCurrentScope().hasDeclaration(type):
+            raise Exception("Unknown reference to type " + type)
+        ref = ast.Reference(context.getCurrentScope().getDeclaration(type))
+        self._params.append([ref, name])
         return True
 
     def pushOtherParam(self, context):
-        type = self.getByName('oparam_type').getToken().id
-        name = self.getByName('oparam_name').getToken().id
-        self._params.append([type, name])
+        token = self.getByName('param').getToken()
+        type = token.type
+        name = token.name
+        if not context.getCurrentScope().hasDeclaration(type):
+            raise Exception("Unknown reference to type " + type)
+        ref = ast.Reference(context.getCurrentScope().getDeclaration(type))
+        self._params.append([ref, name])
         return True
 
     def startScope(self, context):
         type = self.getByName('type').getToken().id
         name = self.getByName('name').getToken().id
         if context.getCurrentScope().hasDeclaration(name, recursive=False):
-            raise Exception("Cannot redefine " + name)
+            raise Exception("The name "+name+" is already defined in current scope")
+            return False
+        if not context.getCurrentScope().hasDeclaration(type):
+            raise Exception("Unknown return type: "+type)
+            return False
         self._scope = context.beginScope(name)
         self._function = ast.Function(type, name, self._params)
         self._scope.declarations.append(self._function)
-        print "declare", self._function, self._params
         for p in self._params:
             self._scope.declarations.append(ast.Variable(p[0], p[1], None))
         return True
