@@ -1,0 +1,140 @@
+
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+%\usepackage[francais]{babel}
+
+\usepackage{color}
+\usepackage{listings}
+\lstset{%
+language=Python,                % choose the language of the code
+basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+numbers=left,                   % where to put the line-numbers
+numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+stepnumber=1,                   % the step between two line-numbers. If it is 1 each line will be numbered
+numbersep=5pt,                  % how far the line-numbers are from the code
+backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=single,                   % adds a frame around the code
+tabsize=2,              % sets default tabsize to 2 spaces
+captionpos=b,                   % sets the caption-position to bottom
+breaklines=true,        % sets automatic line breaking
+breakatwhitespace=false,    % sets if automatic breaks should only happen at whitespace
+escapeinside={\%}{)}          % if you want to add a comment within your code
+}
+
+
+\pagestyle{headings}
+
+
+\title{Parsing language with \texttt{bnf} package}
+\author{Londeix Raphaël}
+
+
+\begin{document}
+
+    \maketitle
+
+    \begin{abstract}
+        The \texttt{bnf} package is a small python package that
+        makes possible to easily parse any language with a BNF
+        notation. This document explains how to do it, what you
+        can and can't do, and details advanced uses.
+    \end{abstract}
+
+    \newpage
+    \section{The \texttt{bnf} package}
+        \subsection{A concept of token}
+            When you write any parser, you basicaly need to define
+            \textit{tokens}. A token is a well defined part of your
+            input language, definable with BNF rules. It can be a
+            terminal one or not. We will see simple tokens classes
+            before combining them. We also will detail different
+            ways to define your tokens. But in the first hand,
+            we need to introduce basic context class.
+
+            \subsubsection{Source of data}
+                In order to introduce tokens and parsing methods, we need
+                a source of data. I called that object a context, because
+                it aggregates a bunch of things, commonly grouped as a context.
+                \texttt{bnf} package provide a simple, ready to use, context
+                class. The context class is used by all tokens as a source
+                while matching patterns. The \texttt{bnf.Context} class
+                is created with a filename, and tokens will implicitly read
+                that file.
+
+                Initializing a context object is really simple as:
+                \lstinputlisting{listings/bnf/ex00.py}
+
+                You are encouraged to define your own context class, but for
+                now, we just need the default one. A more complete working
+                example is given in the next section.
+
+            \subsubsection{\texttt{Literal} class}
+                The simplest token match a string, a \textit{literal}. We
+                will define later all possible ways to use tokens, so just take
+                following examples as they are, examples.
+                So, lets parse our first hello world:
+                \lstinputlisting{listings/bnf/ex01.py}
+
+                I won't write again the startup part of this script, and focus on BNF
+                declaration. If you need more explanation on Python \_\_main\_\_ scope,
+                consider learn it before any other step. So, I put a comment
+                just before the most interesting line. It's really helpfull to have
+                such comments before every defined token. The next line declare
+                \texttt{language} as a literal. The only file that can be parsed a this point
+                is a file that contains exactly the string "Hello, World!" and nothing else.
+                In facts, it will accept whitespaces before or after that string, but we will
+                detail whitespaces rules in a few moment.
+                Before you ask, every token class has a \texttt{parse} method, that takes
+                a context.
+
+            \subsubsection{A more useful notation}
+                The previous example does not allow any customization of matching process.
+                There are other ways to obtain the same result, but with more flexibility.
+                \lstinputlisting{listings/bnf/ex02.py}
+
+                This is exactly the same example. Subclassing default token class is really
+                simple. You just need to know special member or method names and override
+                default behaviour. The \texttt{bnf.Literal} class has a special member
+                \texttt{\_\_token\_\_}, which contains the string to match.
+                We need to have an instance of the \texttt{Language} class, just because
+                of the need to call the parse method. It's generally not needed to instanciate
+                token classes as simple as this one.
+                Let's do something when the string matches:
+                \lstinputlisting{listings/bnf/ex03.py}
+
+                Ok, still not useful, but you can see the point. When any token match,
+                the method \texttt{onMatch} is called.
+
+        \subsection{Group and alternative}
+            We cannot do lots of things without a concept of group. A \textit{group} in BNF
+            makes us able to say that a token can be present more than on time. We suppose
+            you have basic skill in BNF notation.
+
+            \subsubsection{Groups by example}
+                Let's take a bunch of simple BNF example and write the equivalent in Python:
+                \lstinputlisting{listings/bnf/ex04.py}
+
+
+
+        \subsection{Making life easier}
+
+    \newpage
+    \section{Parse any language}
+        \subsection{The language container}
+        \subsection{Separating the concepts from the needs}
+        \subsection{}
+
+    \newpage
+    \section{Advanced uses}
+        \subsection{Your own token classes}
+        \subsection{Overriding the match method}
+        \subsection{}
+
+\end{document}
+
