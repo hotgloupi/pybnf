@@ -34,21 +34,37 @@ escapeinside={\%}{)}          % if you want to add a comment within your code
 \title{Parsing language with \texttt{bnf} package}
 \author{Londeix Raphaël}
 
+\newcommand{\insertpython}[1]{%
+{\ttfamily\lstinputlisting{#1}}%
+}
+
+\renewcommand\rmdefault{pbk}  % famille à utiliser pour du Roman
+%\renewcommand\sfdefault{cmss} % famille à utiliser pour du Sans Serif
+%\renewcommand\ttdefault{bmtt} % famille à utiliser pour du «machine à écrire»
+%\renewcommand\bfdefault{bx}   % collection à utiliser pour du gras
+%\renewcommand\mddefault{m}    % collection à utiliser pour du moyen
+%\renewcommand\itdefault{it}   % forme à utiliser pour de l'italique
+%\renewcommand\sldefault{sl}   % forme à utiliser pour du penché
+%\renewcommand\scdefault{sc}   % forme à utiliser pour de petites majuscules
+%\renewcommand\updefault{n}    % forme à utiliser pour du droit
+%\renewcommand\encodingdefault{OT1}      % codage normal
+\renewcommand\familydefault{\rmdefault} % famille normale: Roman
+%\renewcommand\seriesdefault{\mddefault} % collection normale: moyen
+%\renewcommand\shapedefault{\updefault}  % forme normale: droit
 
 \begin{document}
 
     \maketitle
 
     \begin{abstract}
-        The \texttt{bnf} package is a small python package that
-        makes possible to easily parse any language with a BNF
-        notation. This document explains how to do it, what you
-        can and can't do, and details advanced uses.
+        The \texttt{bnf} python package contains classes that help
+        writing parsers with a simple and close to BNF notation.
     \end{abstract}
 
     \newpage
     \section{The \texttt{bnf} package}
         \subsection{A concept of token}
+
             When you write any parser, you basicaly need to define
             \textit{tokens}. A token is a well defined part of your
             input language, definable with BNF rules. It can be a
@@ -68,7 +84,7 @@ escapeinside={\%}{)}          % if you want to add a comment within your code
                 that file.
 
                 Initializing a context object is really simple as:
-                \lstinputlisting{listings/bnf/ex00.py}
+                \insertpython{listings/bnf/ex00.py}
 
                 You are encouraged to define your own context class, but for
                 now, we just need the default one. A more complete working
@@ -79,7 +95,7 @@ escapeinside={\%}{)}          % if you want to add a comment within your code
                 will define later all possible ways to use tokens, so just take
                 following examples as they are, examples.
                 So, lets parse our first hello world:
-                \lstinputlisting{listings/bnf/ex01.py}
+                \insertpython{listings/bnf/ex01.py}
 
                 I won't write again the startup part of this script, and focus on BNF
                 declaration. If you need more explanation on Python \_\_main\_\_ scope,
@@ -96,7 +112,7 @@ escapeinside={\%}{)}          % if you want to add a comment within your code
             \subsubsection{A more useful notation}
                 The previous example does not allow any customization of matching process.
                 There are other ways to obtain the same result, but with more flexibility.
-                \lstinputlisting{listings/bnf/ex02.py}
+                \insertpython{listings/bnf/ex02.py}
 
                 This is exactly the same example. Subclassing default token class is really
                 simple. You just need to know special member or method names and override
@@ -106,7 +122,7 @@ escapeinside={\%}{)}          % if you want to add a comment within your code
                 of the need to call the parse method. It's generally not needed to instanciate
                 token classes as simple as this one.
                 Let's do something when the string matches:
-                \lstinputlisting{listings/bnf/ex03.py}
+                \insertpython{listings/bnf/ex03.py}
 
                 Ok, still not useful, but you can see the point. When any token match,
                 the method \texttt{onMatch} is called.
@@ -118,7 +134,7 @@ escapeinside={\%}{)}          % if you want to add a comment within your code
 
             \subsubsection{Groups by example}
                 Let's take a bunch of simple BNF example and write the equivalent in Python:
-                \lstinputlisting{listings/bnf/ex04.py}
+                \insertpython{listings/bnf/ex04.py}
 
 
 
