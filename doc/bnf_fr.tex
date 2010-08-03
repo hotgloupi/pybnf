@@ -66,6 +66,7 @@ escapeinside={\%}{)}          % if you want to add a comment within your code
         BNF sous-jacente.
     \end{abstract}
 
+    \newpage
     \section{Introduction}
         Un besoin récurrent en informatique est l'extraction de contenu,
         qui n'est qu'en fait de la traduction. la \bnf (Backus Naur Form)
@@ -73,36 +74,111 @@ escapeinside={\%}{)}          % if you want to add a comment within your code
         Celle-ci permet de relier entre eux des \textit{tokens},
         parties du language donné, afin de former une définition globale
         de celui-ci. La syntaxe et le caractère dynamique de Python permettent
-        une grande flexibilité lors de l'implémentation. J'utiliserai des
-        abusivement certains anglissisme comme parser pour désigner
-        la hiérarchie des classes qui compose le parser, matching lorsqu'il
-        s'agira du processus d'identification des tokens.
+        une grande flexibilité lors de l'implémentation. Cette librairie se
+        base sur cette flexibilité pour décrire la grammaire d'un language.
+        Nous verrons en détails les classes de bases fournies et leurs
+        utilisations. J'utiliserai
+        abusivement certains anglissisme comme \emph{parser} pour désigner
+        la hiérarchie des classes qui compose le parser, ou bien \emph{matching}
+        lorsqu'il s'agira du processus d'identification des tokens.
 
+    \newpage
+    \section{Fonctionnement général}
+        \subsection{La source de donnée}
+            Pour pouvoir définir et utiliser les tokens, nous avons besoin d'une
+            source de données. J'ai appelé cet objet le \emph{contexte} car
+            il aggrège un certains nombre d'objet liés à l'état courant. le
+            package \fixed{bnf} fournit une classe simple et prête à l'emploi.
+            Celle-ci est utilisée par tous les tokens comme une source lors
+            du \textit{matching}. Une instance de la classe \fixed{bnf.Context} est
+            construites avec un nom de fichier en argument, fichier qui sera
+            lu par les tokens.
 
-    \section{La source de donnée}
-        Pour pouvoir comment définir les tokens, nous avons besoin d'une
-        source de données. J'ai appelé cet objet le \textit{contexte} car
-        il aggrège un certains nombre d'objet liés à l'état courant. le
-        package \fixed{bnf} fournit une classe simple et prête à l'emploi.
-        Celle-ci est utilisée par tous les tokens comme une source lors
-        du \textit{matching}. Une instance de la classe \fixed{bnf.Context} est
-        construites avec un nom de fichier en argument, fichier qui sera
-        lu par les tokens.
+            Initialiser un contexte est aussi simple que ça~:
+            \insertpython{listings/bnf/ex00.py}
 
-        Initialiser un contexte est aussi simple que ça:
-        \insertpython{listings/bnf/ex01.py}
+            Un exemple fonctionnel pourrait donner ceci~:
+            \insertpython{listings/bnf/ex01.py}
 
-        Vous noterez que je me force à mettre la notation \bnf avant chaque
-        définition, cela se révèle très utile lors de la relecture. La ligne
-        suivante déclare language comme étant un \textit{littéral}, que la
-        prochaine section décrit. Le seul fichier pouvant être parsé doit
-        contenir exactement la chaîne "Hello, World!". En fait, il va
-        accepter des caractères blancs avant et/ou après, mais nous verrons
-        après comment influencer l'extraction de ces caractères.
+            Vous noterez que je me force à mettre la notation \bnf avant chaque
+            définition, cela se révèle très utile lors de la relecture. La ligne 10
+            déclare \fixed{language} comme étant un \emph{littéral}, que la
+            prochaine section décrit. Le seul fichier pouvant être parsé doit
+            contenir exactement la chaîne "Hello, World!". En fait, il va
+            accepter des caractères blancs avant et/ou après. Les tokens sont
+            configuré pour extraires les caractères blanc usuels par défaut.
+            Nous verrons comment modifier ce comportement, notemment lorsqu'il
+            s'agira d'ignorer autre chose que des caractères (des commentaires
+            par exemple).
 
-    \section{Le concept de token}
-    \section{Les chaînes de caractères}
-    \section{Les groupes et les alternatives}
-    \section{Les classes utiles}
+        \subsection{Le concept de token}
+            La classe \fixed{bnf.Token} défini les attributs et méthodes que
+            doivent impérativement posséder ou redéfinir tous les tokens.
+            La lecture du code source peut-être utile puisqu'il ne contient
+            que très peu de code, et beaucoup de commentaire.
+            Comme dit précédemment, la définition
+            d'une grammaire résulte en une structure arborescente, la racine
+            étant le language en lui-même, les feuilles étant les règles
+            terminales de la \bnf.
+
+            Chaque token possède au moins une méthode \fixed{match}, prenant
+            le contexte en argument et renvoyant un booléen. La valeur de ce booléen
+            informe l'appelant que le token à \emph{matché} ou pas. L'écriture de
+            cette méthode impose plusieurs contraintes afin que l'ensemble puisse
+            fonctionner harmonieusement.
+            Voici le comportement attendu par la méthode match~:
+            \begin{itemize}
+                \item Ne retourne rien d'autre que \fixed{True} ou \fixed{False}
+                \item Laisse le contexte inchangé lorsque le retour est \fixed{False}
+                \item Consomme effectivement les caractères lorsque le retour est \fixed{True}
+                \item Appelle la méthode \fixed{onBeginMatch} avant toute autre chose
+                \item Appelle la méthode \fixed{onMatch} lorsque le retour est \fixed{True}
+                \item Appelle la méthode \fixed{onEndMatch} juste avant de retourner.
+            \end{itemize}
+
+            \noindent
+            Les méthodes \fixed{onBeginMatch}, \fixed{onMatch} et
+            \fixed{onEndMatch} ne font rien par défaut, elles doivent pouvoir être
+            surdéfinies sans modifier le comportement général du token. Chacune
+            de ces méthodes prend le contexte en argument, et \fixed{onEndMatch}
+            prend en plus le résultat du matching en plus.
+
+            Pour des raisons de commodité, tous les tokens possèdes une méthode
+            \fixed{\_\_str\_\_} qui permet d'afficher les tokens dans leur
+            représentation la plus fidèle possible à la \bnf.
+
+    \newpage
+    \section{Les classes de base}
+        Nous allons ici décrire les classes les plus utiles pour créer un parseur.
+        Tout d'abord, nous allons décrire les classes permettant de créer les
+        règles terminales, puis les classes représentant les groupes (au sens de
+        la \bnf) et enfin les classes qui nous simplifierons la vie.
+
+        \subsection{Les chaînes de caractères}
+            Nous avons abordé le concept de \emph{littéral} dans la première
+            section. La classe utilisée ici est \fixed{bnf.Literal}, elle permet
+            de \emph{matcher} une chaîne de caractère fixe. Reprennons le précédent
+            exemple en utilisant une syntaxe un tout petit peu différente~:
+            \insertpython{listings/bnf/ex02.py}
+            Les lignes de 10 à 14 seront omisent dans les examples suivants,
+            nous nous concentrerons sur la \bnf. Ici, nous surclassons la
+            classe \fixed{bnf.Literal}, ce qui ici n'apporte rien, mais sera
+            la voie privilégiée par la suite. En effet, c'est elle
+            qui permet de redéfinir les \emph{hooks} de matching
+            (\fixed{onBeginMatch}, \fixed{onMatch} et \fixed{onEndMatch}).
+            Les classes possèdent certains attributs spéciaux à connaître.
+            Heureusement, ceux-ci sont en nombre très réduit et permettent
+            d'accelerer grandement la surdefinition des classes. Pour la classe
+            \fixed{bnf.Literal}, c'est l'attribut \fixed{\_\_token\_\_} qui
+            contient la chaîne à matcher.
+
+        \subsection{Les groupes et les alternatives}
+        \subsection{Les classes utiles}
+
+    \newpage
+    \section{Le parser en condition réelle}
+        \subsection{Les groupes récursifs}
+        \subsection{Surclasser le contexte}
+        \subsection{Vos propres tokens}
 
 \end{document}
