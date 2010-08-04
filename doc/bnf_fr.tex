@@ -121,7 +121,7 @@ escapeinside={\%}{)}          % if you want to add a comment within your code
             étant le language en lui-même, les feuilles étant les règles
             terminales de la \bnf.
 
-            Chaque token possède au moins une méthode \fixed{match}, prenant
+            Chaque token possède une méthode \fixed{match}, prenant
             le contexte en argument et renvoyant un booléen. La valeur de ce booléen
             informe l'appelant que le token à \emph{matché} ou pas. L'écriture de
             cette méthode impose plusieurs contraintes afin que l'ensemble puisse
@@ -155,72 +155,129 @@ escapeinside={\%}{)}          % if you want to add a comment within your code
         la \bnf) et enfin les classes qui nous simplifierons la vie.
 
         \subsection{Les chaînes de caractères}
-            Nous avons abordé le concept de \emph{littéral} dans la première
-            section. La classe utilisée ici est \fixed{bnf.Literal}, elle permet
-            de \emph{matcher} une chaîne de caractère fixe. Reprennons le précédent
-            exemple en utilisant une syntaxe un tout petit peu différente~:
-            \insertpython{listings/bnf/ex02.py}
-            Les lignes de 10 à 14 seront omisent dans les exemples suivants,
-            nous nous concentrerons sur la \bnf. Ici, nous surclassons la
-            classe \fixed{bnf.Literal}, ce qui ici n'apporte rien, mais sera
-            la voie privilégiée par la suite. En effet, c'est elle
-            qui permet de redéfinir les \emph{hooks} de matching
-            (\fixed{onBeginMatch}, \fixed{onMatch} et \fixed{onEndMatch}).
-            Les classes possèdent certains attributs spéciaux à connaître.
-            Heureusement, ceux-ci sont en nombre très réduit et permettent
-            d'accelerer grandement la surdefinition des classes. Pour la classe
-            \fixed{bnf.Literal}, c'est l'attribut \fixed{\_\_token\_\_} qui
-            contient la chaîne à matcher.
 
-            Une autre classe permet de matcher des chaînes de caractères,
-            c'est la classe \fixed{bnf.Identifier}. Celle-ci permet de
-            matcher un \emph{pattern}, qui sera représenté par une expression
-            régulière. Lorsqu'une chaîne est effectivement identifiée comme
-            validant l'expression régulière, le membre \fixed{id} est
-            initialisé avec la chaîne en question.
-            Voici un exemple simple utilisant cette classe~:
-            \insertpython{listings/bnf/ex03.py}
+            \subsubsection{La classe \fixed{bnf.Literal}}
+                Nous avons abordé le concept de \emph{littéral} dans la première
+                section. La classe utilisée ici est \fixed{bnf.Literal}, elle permet
+                de \emph{matcher} une chaîne de caractère fixe. Reprennons le précédent
+                exemple en utilisant une syntaxe un tout petit peu différente~:
+                \insertpython{listings/bnf/ex02.py}
+                Les lignes de 1 à 4 et de 10 à 14 seront souvent omisent dans les exemples suivants,
+                nous nous concentrerons sur la \bnf. Ici, nous surclassons la
+                classe \fixed{bnf.Literal}, ce qui ici n'apporte rien, mais sera
+                la voie privilégiée par la suite. En effet, c'est elle
+                qui permet de redéfinir les \emph{hooks} de matching
+                (\fixed{onBeginMatch}, \fixed{onMatch} et \fixed{onEndMatch}).
+                Les classes possèdent certains attributs spéciaux à connaître.
+                Heureusement, ceux-ci sont en nombre très réduit et permettent
+                d'accélérer grandement la surdéfinition des classes. Pour la classe
+                \fixed{bnf.Literal}, c'est l'attribut \fixed{\_\_token\_\_} qui
+                contient la chaîne à matcher.
 
-            Vous noterez cette fois que l'attribut particulier est
-            \fixed{\_\_default\_regex\_\_}.
+            \subsubsection{La classe \fixed{bnf.Identifier}}
+                Une autre classe permet de matcher des chaînes de caractères,
+                c'est la classe \fixed{bnf.Identifier}. Celle-ci permet de
+                matcher un \emph{pattern}, qui sera représenté par une expression
+                régulière. Lorsqu'une chaîne est effectivement identifiée comme
+                validant l'expression régulière, le membre \fixed{id} est
+                initialisé avec la chaîne en question.
+                Voici un exemple simple utilisant cette classe~:
+                \insertpython{listings/bnf/ex03.py}
+
+                Vous noterez cette fois que l'attribut particulier est
+                \fixed{\_\_default\_regex\_\_}.
 
         \subsection{Les groupes et les alternatives}
-            Jusqu'a présent, les exemples ne montrent pas l'utilisation de
-            plusieurs tokens. Nous allons maintenant pouvoir chaîner les
-            tokens avec l'utilisation des groupes. Ceux-ci correspondent
-            naturellement aux groupes tels que défini dans la \bnf. Il
-            permettent de définir un token comme étant une séquence d'autres
-            tokens, et de spécifier un nombre minimal et maximal de répétition.
-            Voyons maintenant une série d'exemple de la classe \fixed{bnf.Group}~:
-            \insertpython{listings/bnf/ex04.py}
 
-            Les exemples parlent d'eux-même. Le constructeur d'un groupe prend
-            en paramètre une liste. Il fait des traitements sur cette liste,
-            afin de laisser au développeur une syntaxe la plus simple possible.
-            Les éléments de type \fixed{str} sont automatiquement convertis en
-            \fixed{bnf.Literal}. Vous pouvez aussi mettre dans la liste une
-            \emph{classe}, et non pas une \emph{instance} de cette classe.
-            Il est aussi possible de spécifier dans le constructeur le
-            nombre minimal et maximal de répétition avec les paramètres \fixed{min}
-            et \fixed{max}. Lorsque \fixed{max}
-            vaut $-1$, cela signifie que le nombre de répétition est infini.
-            Il est aussi possible de fournir des méthodes à la place d'entiers,
-            qui seront alors appelées pour déterminer dynamiquement le nombre
-            d'occurence minimum et maximum.
+            \subsubsection{La classe \fixed{bnf.Group}}
+                Jusqu'a présent, les exemples ne montrent pas l'utilisation de
+                plusieurs tokens. Nous allons maintenant pouvoir chaîner les
+                tokens avec l'utilisation des groupes. Ceux-ci correspondent
+                naturellement aux groupes tels que défini dans la \bnf. Il
+                permettent de définir un token comme étant une séquence d'autres
+                tokens, et de spécifier un nombre minimal et maximal de répétition.
+                Voyons maintenant une série d'exemple de la classe \fixed{bnf.Group}~:
+                \insertpython{listings/bnf/ex04.py}
+
+                Les exemples parlent d'eux-même. Le constructeur d'un groupe prend
+                en paramètre une liste. Il fait des traitements sur cette liste,
+                afin de laisser au développeur une syntaxe la plus simple possible.
+                Les éléments de type \fixed{str} sont automatiquement convertis en
+                \fixed{bnf.Literal}. Vous pouvez aussi mettre dans la liste une
+                \emph{classe}, et non pas une \emph{instance} de cette classe.
+                Il est aussi possible de spécifier dans le constructeur le
+                nombre minimal et maximal de répétition avec les paramètres \fixed{min}
+                et \fixed{max}. Lorsque \fixed{max}
+                vaut $-1$, cela signifie que le nombre de répétition est infini.
+                Il est aussi possible de fournir des méthodes à la place d'entiers,
+                qui seront alors appelées pour déterminer dynamiquement le nombre
+                d'occurence minimum et maximum.
 
 
-            Nous aurions aussi pu dériver la classe \fixed{bnf.Group}, par
-            exemple~:
-            \insertpython{listings/bnf/ex06.py}
-            Cette fois, l'attribut est \fixed{\_\_group\_\_}. Il est initialisé
-            avec une liste de token.
+                Nous aurions aussi pu dériver la classe \fixed{bnf.Group}, par
+                exemple~:
+                \insertpython{listings/bnf/ex06.py}
+                Cette fois, l'attribut est \fixed{\_\_group\_\_}. Il est initialisé
+                avec une liste de token.
 
-            Cette classe est en fait la classe la plus utilisée lors du développement
-            d'un parser. Elle possède un certains nombre de possibilités, notament
-            celle d'être récursive. Nous aborderons ces fonctionnalités dans le
-            prochain chapitre.
+                Cette classe est en fait la classe la plus utilisée lors du développement
+                d'un parser. Elle possède un certains nombre de possibilités, notament
+                celle d'être récursive. Nous aborderons ces fonctionnalités dans le
+                prochain chapitre.
+
+            \subsubsection{La classe \fixed{bnf.Alternative}}
+                J'appelle \emph{alternative} le «ou» de la \bnf. Encore une fois,
+                la flexibilité de Python va nous faciliter la tâche. En effet, l'operateur
+                binaire \fixed{|} est redéfini, et implique que nous n'ayons jamais
+                besoin d'utiliser la classe explicitement. L'opérateur peut donc agir
+                entre des instances ou des classes de façon totalement transparente.
+                Mais voyons tout de suite quelques exemples~:
+                \insertpython{listings/bnf/ex05.py}
+
+                Au besoin, comme la classe \fixed{bnf.Alternative} dérive de \fixed{bnf.Group},
+                elle est utilisable de la même façon.
 
         \subsection{Les classes utiles}
+            Dans la vie réelle (prochaine section), nous aurons besoin de classes qui
+            nous simplifierons la vie.
+
+            \subsubsection{La classe \fixed{bnf.NamedToken}}
+                Lorsque vous créez un groupe, chacun des tokens est contenu dans une liste
+                qui ne vous est normalement pas accessible. Une manière plus claire pour
+                récuperer un token reste de lui donner un nom. En effet, il n'est pas conseillé
+                d'acceder au membre privé \fixed{\_group} ou encore de garder un pointeur vers
+                le ou les tokens intéressant(s). Le but est d'avoir la syntaxe la plus
+                claire possible. Pour récuperer le token, il suffit d'utiliser la méthode
+                \fixed{getByName} de la classe \fixed{bnf.Group}.
+                Voici un exemple permettant de parser un fichier contenant des paires clef, valeur~:
+                \insertpython{listings/bnf/ex07.py}
+
+                Vous remarquerez cepedant une petite lourdeur, la méthode \fixed{getByName}
+                retourne en fait l'instance du \fixed{bnf.NamedToken}, et il faut ensuite
+                utiliser \fixed{getToken} pour finalement récupérer les instances (ici, des
+                classes \fixed{Key} et \fixed{Value}). la classe \fixed{bnf.NamedToken}
+                possède aussi la méthode \fixed{getName}, si vous avez besoin de retrouver
+                le nom.
+
+            \subsubsection{La classe \fixed{bnf.TokenFunctor}}
+                Nous avions évoqué la présence de différent \emph{hooks} (les méthodes \fixed{on[Begin|End]?Match}),
+                mais il arrive assez souvent que ces hooks ne suffisent pas, ou rendent la tâche plus
+                compliquées que ce qu'elle devrait être. La classe \fixed{bnf.TokenFunctor} est
+                là pour pallier à ce besoin. Cette classe est un token comme les autres, à la différence qu'il
+                renvoit le résultat d'une méthode à vous (toujours un booléen). Il est utile
+                par exemple lors d'une alternative, ou bien lorsqu'un matching doit être plus intelligent.
+                Par exemple, si on reprend l'exemple précédent et que l'on veut interdire la
+                redéfinition de clef~:
+                \insertpython{listings/bnf/ex08.py}
+                Nous avons besoin de connaitre \fixed{self} pour pouvoir donner au \emph{functor} la
+                méthode liée à l'instance courante, ce qui nous oblige à initialiser notre groupe dans
+                le constructeur. On appelle juste le contructeur de la classe parente (\fixed{bnf.Group}),
+                avec le la liste de token en paramètre. J'insiste sur le fait que la méthode passée
+                au \emph{functor} doit retourner un booléen, même si elle ne valide rien (par
+                exemple lors d'une initialisation lourde, placée le plus tard possible).
+
+
+
 
     \newpage
     \section{Le parser en condition réelle}

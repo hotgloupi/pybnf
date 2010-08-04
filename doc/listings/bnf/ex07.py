@@ -1,7 +1,27 @@
 
-# Hello ::= "Hello" | "hello"
-Hello = Identifier(r'[hH]ello')
+# Key ::= r'[_a-zA-Z][_a-zA-Z0-9]*'
+class Key(bnf.Identifier):
+    # r'[_a-zA-Z][_a-zA-Z0-9]*' is the default regex for bnf.Identifier
+    pass
 
-# World ::= ["world" | "World"] [<whitespace]* "!"
-class World(Identifier):
-    __default_regex__ = r'[wW]orld[\w]*!'
+# Value ::= r'[0-9]+'
+class Value(bnf.Identifier):
+    __default_regex__ = r'[0-9]+'
+
+# Pair ::= Key "=" Value ";"
+class Pair(Group):
+    __group__ = [
+        NamedToken('key', Key),
+        "=",
+        NamedToken('val', Value),
+        ";"
+    ]
+
+    def onMatch(self, context):
+        key = self.getByName('key').getToken()
+        val = self.getByName('val').getToken()
+        print "FOUND:", key.id, '=', val.id
+
+# lang ::= [Pair]*
+lang = Group([Pair], max=-1)
+
