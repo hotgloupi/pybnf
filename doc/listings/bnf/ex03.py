@@ -1,6 +1,8 @@
-# Language ::= "Hello, World!"
-class Language(Literal):
-    __token__ = "Hello, World!"
+import bnf
+
+# Language ::= "[hH]ello, [wW]orld!"
+class Language(bnf.Identifier):
+    __default_regex__ = r"[hH]ello, [wW]orld!"
 
     def onMatch(self, context):
-        print "Match !!"
+        print "Match", self.id
