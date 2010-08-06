@@ -275,13 +275,29 @@ escapeinside={\%}{)}          % if you want to add a comment within your code
                 avec le la liste de token en paramètre. J'insiste sur le fait que la méthode passée
                 au \emph{functor} doit retourner un booléen, même si elle ne valide rien (par
                 exemple lors d'une initialisation lourde, placée le plus tard possible).
-
-
-
+		
 
     \newpage
     \section{Le parser en condition réelle}
+        Nous avons survolé presque toutes les classes du package \fixed{bnf}.
+        Il est temps maintenant d'aborder des problèmes plus complexes, des
+        problèmes inévitable dès lors que vous traduisez autre chose qu'un
+        simple fichier CSV. Nous allons voir au travers d'exemples plus 
+        conséquents certaines de ces difficultées.
+
         \subsection{Les groupes récursifs}
+            Les groupes récursifs sont monnaie courante, ils sont présent 
+            partout. Nous allons ici prendre l'exemple du format XML. Il est
+            évident que quelle que soit la méthode choisie, nous n'allons pas
+            définir différents types de balise en fonction du niveau d'arborescence
+            à laquelle elles se trouvent. Nous allons suivre notre intuition,
+            c'est à dire, une balise XML peut contenir soit du texte, soit
+            une autre balise. C'est donc un groupe récursif.
+            Voyons d'abord le code source~:
+            \insertpython{listings/bnf/ex09.py}
+            
+            Il est nécessaire ici aussi de mettre la définition du groupe dans 
+            sont constructeur car la classe elle même n'est pas encore définie.
         \subsection{Surclasser le contexte}
         \subsection{Vos propres tokens}
 
