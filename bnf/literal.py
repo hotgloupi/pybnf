@@ -36,16 +36,8 @@ class Literal(Token):
         self._translation = translation
         self._whitespaces = whitespaces
 
-    def clone(self):
-        new = self.__class__(
-            token=self._token,
-            skip_ws=self._skip_ws,
-            translation=self._translation,
-            whitespaces=self._whitespaces
-        )
-        return new
-
     def match(self, context):
+        self.onBeginMatch(context)
         context.pushToken(self)
         if self._skip_ws:
             context.pushRule('whitespaces', self._whitespaces)
@@ -55,6 +47,7 @@ class Literal(Token):
             res = True
         if self._skip_ws:
             context.popRule('whitespaces')
+        self.onEndMatch(context, res)
         return res
 
     def onMatch(self, context):

@@ -24,13 +24,6 @@ class Identifier(Token):
         self._whitespaces = whitespaces
         self.id = None
 
-    def clone(self):
-        new = self.__class__()
-        new._regex = self._regex
-        new._regex_str = self._regex_str
-        new._whitespaces = self._whitespaces
-        return new
-
     def match(self, context):
         context.pushToken(self)
         context.pushRule('whitespaces', self._whitespaces)

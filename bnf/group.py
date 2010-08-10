@@ -37,10 +37,6 @@ class Group(Token):
         self._min = min
         self._max = max
 
-    def clone(self):
-        new = self.__class__(group=self._group, min=self._min, max=self._max)
-        return new
-
     def getMinMatch(self, context=None):
         if isinstance(self._min, int):
             return self._min
@@ -67,8 +63,6 @@ class Group(Token):
                     res = item
             else:
                 res = item()
-        elif hasattr(item, 'clone'):
-            res = item.clone()
         elif isinstance(item, list):
             res = Group(item)
         else:
@@ -93,6 +87,7 @@ class Group(Token):
         return res
 
     def match(self, context):
+        self.onBeginMatch(context)
         debug = False
         global indent
         indent += 1
@@ -124,12 +119,14 @@ class Group(Token):
                         self.onMatch(context)
                         context.restore(backup)
                         indent -= 1
+                        self.onEndMatch(context, True)
                         return True
 
                     indent -= 1
                     context.restore(backup)
                     if debug:
                         print '-' * indent, i, "not found:", '(',context.getCurrentLine(),')',token.__class__.__name__, str(token)
+                    self.onEndMatch(context, False)
                     return False
                 else:
                     self.onSubMatch(context, token)
@@ -140,10 +137,8 @@ class Group(Token):
             print '-' * indent, i, '(',context.getCurrentLine(),')',"found:", self.__class__.__name__, str(self)
         indent -= 1
         self.onMatch(context)
+        self.onEndMatch(context, True)
         return True
-
-    def onMatch(self, context):
-        pass
 
     def onSubMatch(self, context, token):
         pass

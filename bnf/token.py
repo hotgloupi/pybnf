@@ -33,10 +33,21 @@ class Token(object):
         """
         return False
 
-    @abstractmethod
     def onMatch(self, context):
         """
             When matching is True, the method match should call this hook
+        """
+        pass
+
+    def onBeginMatch(self, context):
+        """
+            This hook method is called before everything else
+        """
+        pass
+
+    def onEndMatch(self, context, res):
+        """
+            This hook method is called after everything else
         """
         pass
 
@@ -79,9 +90,3 @@ class Token(object):
         else:
             return Alternative([self, other_token])
 
-    @abstractmethod
-    def clone(self):
-        """
-            Return a new copy a the token
-        """
-        return self.__class__()
