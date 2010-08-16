@@ -133,6 +133,10 @@ class Context(object):
     def getTokenStack(self):
         return self._token_stack
 
+    def printTokenStack(self):
+        for token in self.getTokenStack():
+            print '-', token
+
     def getBuf(self):
         return self._buf
 

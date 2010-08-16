@@ -53,16 +53,20 @@ class Group(Token):
     def prepareItem(self, item):
         if isinstance(item, NamedToken):
             return NamedToken(item.getName(), self.prepareItem(item.getToken()))
+        elif isinstance(item, dict):
+            key, val = item.items()[0]
+            return NamedToken(key, self.prepareItem(val))
         if isinstance(item, basestring):
             res = Literal(token=item)
         elif inspect.isclass(item):
-            if issubclass(item, Group):
-                if item == Group or item.__recursive_group__ == False:
-                    res = item()
-                else:
-                    res = item
-            else:
-                res = item()
+            res = item
+#            if issubclass(item, Group):
+#                if item == Group or item.__recursive_group__ == False:
+#                    res = item()
+#                else:
+#                    res = item
+#            else:
+#                res = item()
         elif isinstance(item, list):
             res = Group(item)
         else:
@@ -88,7 +92,7 @@ class Group(Token):
 
     def match(self, context):
         self.onBeginMatch(context)
-        debug = False
+        debug = True
         global indent
         indent += 1
         i = 0
@@ -97,11 +101,13 @@ class Group(Token):
             backup = context.clone()
             for index, token in enumerate(self._group):
                 if inspect.isclass(token):
-                    if issubclass(token, Group):
-                        token = token()
-                        self._group[index] = token
-                    else:
-                        raise Exception("Wrong object found in the group")
+                    token = token()
+                    self._group[index] = token
+                   # if issubclass(token, Group):
+                   #     token = token()
+                   #     self._group[index] = token
+                   # else:
+                   #     raise Exception("Wrong object found in the group")
                 #elif i > 0:
                 #    token = token.clone()
                 #    self._group[index] = token

@@ -10,7 +10,8 @@ class EOF(Token):
     def match(self, context):
         context.pushToken(self)
         backup = context.clone()
-        context.skipChars(self.__whitespaces__)
+        if self.__whitespaces__ is not None:
+            context.skipChars(self.__whitespaces__)
         if context.readSize(1) == False:
             self.onMatch(context)
             return True
@@ -18,8 +19,3 @@ class EOF(Token):
             context.restore(backup)
             return False
 
-    def clone(self):
-        return self.__class__()
-
-    def onMatch(self, context):
-        pass

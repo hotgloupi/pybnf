@@ -10,9 +10,6 @@ class NamedToken(Token):
         self._name = name
         self._token = token
 
-    def clone(self):
-        return NamedToken(self._name, self._token.clone())
-
     def getName(self):
         return self._name
 
@@ -22,8 +19,6 @@ class NamedToken(Token):
     def match(self, context):
         context.pushToken(self)
         return self._token.match(context)
-
-    def onMatch(self): pass
 
     def __str__(self):
         return str(self._token)

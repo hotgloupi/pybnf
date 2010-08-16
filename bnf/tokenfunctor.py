@@ -63,19 +63,6 @@ class TokenFunctor(Group):
             raise Exception("TokenFunctor bounded method must return a bool")
         return res
 
-    def clone(self):
-        new_args = []
-        if self._this is not None:
-            new_args.append(self._this) # we dont clone this arg
-        new_args.append(self._method)
-        for arg in self._args:
-            new_args.append(self.prepareItem(arg))
-
-        new_kwargs = {}
-        for k, v in self._kwargs.iteritems():
-            new_kwargs[k] = self.prepareItem(v)
-        return TokenFunctor(*new_args, **new_kwargs)
-
     def __str__(self):
         return '' #'functor"' + self._this.__class__.__name__ + "." + self._method.__name__ + '"'
 

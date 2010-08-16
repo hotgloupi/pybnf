@@ -7,4 +7,9 @@ from tl.bnf.class_declaration import ClassDeclaration
 
 # Declaration ::= FunctionDeclaration | VariableDeclaration | ClassDeclaration
 class Declaration(Group):
-    __group__ = [VariableDeclaration | FunctionDeclaration | ClassDeclaration]
+
+    __recursive_group__ = True
+
+    __group__ = [
+        VariableDeclaration | FunctionDeclaration | ClassDeclaration
+    ]

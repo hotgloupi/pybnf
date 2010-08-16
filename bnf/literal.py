@@ -50,12 +50,5 @@ class Literal(Token):
         self.onEndMatch(context, res)
         return res
 
-    def onMatch(self, context):
-        return
-        if self._translation is not None:
-            print self._translation
-        else:
-            print self
-
     def __str__(self):
         return str(self._token)

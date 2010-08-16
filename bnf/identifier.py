@@ -38,10 +38,6 @@ class Identifier(Token):
         context.pushToken("buf: " +context.getBuf())
         return retval
 
-    def onMatch(self, context):
-        return
-
-        print self
 
     def __str__(self):
         if self.id is not None:

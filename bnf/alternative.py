@@ -29,11 +29,6 @@ class Alternative(Group):
                 context.popToken(start=alternative)
         return False
 
-    def onMatch(self, context): pass
-
-    def clone(self):
-        return self.__class__(self._group)
-
     def __or__(self, other):
         self._group.append(self.prepareItem(other))
         return self

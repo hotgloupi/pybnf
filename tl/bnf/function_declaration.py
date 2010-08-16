@@ -20,9 +20,6 @@ class FunctionDeclarationParam(Group):
             ])
         ])
 
-    def clone(self):
-        return FunctionDeclarationParam()
-
     def pushBoth(self, context):
         self.type = self.getByName('type').getToken().id
         self.name = self.getByName('name').getToken().id
@@ -38,7 +35,6 @@ class FunctionDeclarationParam(Group):
 # FunctionDeclaration ::= Type Variable "(" [[Type Variable] [ "," Type Variable]*]? ")" "{" [Statement]* "}"
 class FunctionDeclaration(Group):
     _params = None
-
 
     def __init__(self):
         Group.__init__(self, [
@@ -62,10 +58,6 @@ class FunctionDeclaration(Group):
             Group([Statement], min=0, max=-1),
             "}",
         ])
-
-
-    def clone(self):
-        return FunctionDeclaration()
 
     def pushParam(self, context):
         token = self.getByName('param').getToken()
@@ -105,17 +97,22 @@ class FunctionDeclaration(Group):
         return True
 
     def match(self, context):
+        print '#STARTMATCH',object.__str__(self)
+        context.printTokenStack()
         self._params = []
         self._scope = None
         res = Group.match(self, context)
         if self._scope is not None:
             context.endScope()
+        self._params = []
+        self._scope = None
+        print '#ENDMATCH',object.__str__(self), res
         return res
 
     def onMatch(self, context):
+        print '##MATCH', object.__str__(self)
         self._scope.parent.childs.append(self._scope)
         self._scope.parent.declarations.append(self._function)
-
 
     def __str__(self):
         return 'FunctionDeclaration'
